@@ -167,3 +167,38 @@ end
 def player_biggest_shoe_size
   players.max_by{|player, stats| stats.fetch(:shoe)}[1]
 end
+
+
+def num_points_scored(player)
+  if game_hash[:away][:players].keys.include?(player)
+    return game_hash[:away][:players][player][:points]
+  elsif game_hash[:home][:players].keys.include?(player)
+    return game_hash[:home][:players][player][:points]
+  else
+    return "Player not found"
+  end
+end
+
+def shoe_size(player)
+  if game_hash[:away][:players].keys.include?(player)
+    return game_hash[:away][:players][player][:shoe]
+  elsif game_hash[:home][:players].keys.include?(player)
+    return game_hash[:home][:players][player][:shoe]
+  else
+    return "Player not found"
+  end
+end
+
+def team_colors(team)
+  if team == game_hash[:home][:team_name]
+    return game_hash[:home][:colors]
+  elsif team == game_hash[:away][:team_name]
+    return game_hash[:away][:colors]
+  else
+    return "Team not found"
+  end
+end
+
+def team_names
+  return [game_hash[:home][:team_name], game_hash[:away][:team_name]]
+end

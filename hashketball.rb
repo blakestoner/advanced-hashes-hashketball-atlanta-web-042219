@@ -118,95 +118,81 @@ def game_hash
 end
 
 
-def num_points_scored (name)
-  answer = nil
-
-  game_hash.each do |team, details_hash|
-    players_array = details_hash[:players]
-      players_array.each do |player_details_hash|
-        if player_details_hash[:name] == name
-          answer = player_details_hash[:points]
-        end
-      end
-  end
-  answer
-end
-
-
 def shoe_size(name)
-  answer = nil
-
-  game_hash.each do |team, details_hash|
-    players_array = details_hash[:players]
-      players_array.each do |player_details_hash|
-        if player_details_hash[:name] == name
-          answer = player_details_hash[:shoe]
-        end
-      end
-  end
-  answer
+  player = find_the_player(name)
+  player.fetch(:shoe)
 end
 
-
-def team_colors (team_name)
-    colors = nil
-    game_hash.each do |team, team_details_hash|
-        if team_details_hash[:name] == team_name
-            colors = team_details_hash[:colors].flatten
-        end
-    end
-    colors
+def num_points_scored(name)
+  player = find_the_player(name)
+  player.fetch(:points)
 end
 
-
-def team_names
-  game_hash.collect do |team, team_details_hash|
-    team_details_hash[:name] 
-  end
+def team_colors(team_name)
+  team = find_the_team(team_name)
+  team.fetch(:colors)
 end
 
-
-def player_numbers (team_name)
-  player_numbers_list = []
-  game_hash.each do |team, team_details_hash|
-    if team_details_hash[:name] == team_name
-      team_details_hash[:players].each do |player|
-        player.each do |key, value|
-          if key == :number 
-            player_numbers_list << value
-          end
-        end
-      end
-    end
-  end
-  player_numbers_list
+def teams
+  game_hash.values
 end
 
-
-def player_stats(player_name)
-  player_stats = {}
-  game_hash.each do |team, team_details_hash|
-    team_details_hash[:players].each do |stats|
-
-      if stats[:name] == player_name
-        stats.delete(:name)
-        player_stats = stats
-      end
-    end
-  end
-  player_stats
+def find_the_team(team_name)
+  teams.find {|team| team.fetch(:team_name) == team_name}
 end
 
 def big_shoe_rebounds
-  big_shoes_guy = 0
-  rebounds = 0
-    game_hash.each do | team, team_details_hash|
-      team_details_hash[:players].each do | stats |
-        if stats[:shoe] > big_shoes_guy
-          big_shoes_guy = stats[:shoe]
-          rebounds = stats[:rebounds]
-        end
-      end
-    end
-  rebounds
+  player = player_biggest_shoe_size
+  player.fetch(:rebounds)
 end
+
+def player_biggest_shoe_size
+  players.sort_by {|player| player.fetch(:shoe) }.last
+end
+
+def players
+  home_players = game_hash.fetch(:home).fetch(:players)
+  away_players = game_hash.fetch(:away).fetch(:players)
+  home_players + away_players
+end
+
+def team_names
+  teams.map do |team|
+    team[:team_name]
+  end
+end
+
+def player_numbers(team_name)
+  find_the_team(team_name)[:players].map do |player|
+    player[:number]
+  end
+end
+
+def player_stats(player_name)
+  find_the_player(player_name).reject { |key, value| key == :player_name }
+end
+
+def find_the_player(name)
+  players.find {|player| player.fetch(:player_name) == name}
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

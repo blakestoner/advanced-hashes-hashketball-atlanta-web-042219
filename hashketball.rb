@@ -169,6 +169,9 @@ def player_biggest_shoe_size
 end
 
 
+
+
+
 def num_points_scored(player)
   if game_hash[:away][:players].keys.include?(player)
     return game_hash[:away][:players][player][:points]
@@ -202,3 +205,5 @@ end
 def team_names
   return [game_hash[:home][:team_name], game_hash[:away][:team_name]]
 end
+
+
